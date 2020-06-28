@@ -75,9 +75,10 @@ int main(){
 		MessageBox(NULL, L"Error!", L"ERROR", MB_ICONWARNING);
 	ShowWindow(hwnd, SW_SHOW); //Params -> https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-showwindow
 	UpdateWindow(hwnd);
-	bool appRunning = true;
-	while (appRunning) {
-		broadcast();
+	MSG msg = {0};
+	while (GetMessage(&msg, NULL, NULL, NULL)) {
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
 	}
 	return 0;
 }
@@ -105,13 +106,4 @@ static LRESULT CALLBACK windowEvent(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM 
 			return DefWindowProc(hwnd, uMsg, wParam, lParam);
 	}
 	return NULL;
-}
-
-bool broadcast() {
-	MSG msg;
-	while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) > 0) {
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
-	}
-	return true;
 }
