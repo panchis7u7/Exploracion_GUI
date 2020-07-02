@@ -8,8 +8,49 @@
 	#define nombre(s) s
 #endif
 
+//ESTRUCTURA QUE IMPLEMENTA MANEJO DE VECTORES.
+template <typename T>
+struct VEC_2DTEMPLATE {
+	T x;	//COMPONENTE X DEL VECTOR.
+	T y;	//COMPONENTE Y DEL VECTOR.
+	T Mag_Sqrt() { return sqrt(x * x + y * y); }		//MAGNITUD DEL VECTOR.
+	T Mag() { return x * x + y * y; }		//MAGNITUD DEL VECTOR.
+	T Dot(const VEC_2DTEMPLATE& vec) { return this->x * vec.x + this->y * vec.y; }	//PRODUCTO PUNTO ENTRE 2 VECTORES.
+	T Cruz(const VEC_2DTEMPLATE& vec) { return this->x * vec.y - this->y * vec.x; }	//PRODUCTO CRUZ ENTRE 2 VECTORES.
+	VEC_2DTEMPLATE() : x(0), y(0) {}	//LISTA DE INICIALIZACION DE MIEMBROS A 0.
+	VEC_2DTEMPLATE(T _x, T _y) : x(_x), y(_y) {}		//LISTA DE INICIALIZACION DE MIEMBROS.
+	VEC_2DTEMPLATE(const VEC_2DTEMPLATE& vec) : x(vec.x), y(vec.y) {}	//CONSTRUCTOR DE COPIA DE VECTORES.
+	VEC_2DTEMPLATE(VEC_2DTEMPLATE&& vec) { x = std::move(vec.x); y = std::move(vec.y); }		//CONSTRUCTOR DE COPIA DE VECTORES.
+	VEC_2DTEMPLATE Normalizar() { T norm = 1 / Mag_Sqrt(); return VEC_2DTEMPLATE(x * norm, y * norm); }	//NORMALIZAR UN VECTOR.
+	VEC_2DTEMPLATE Perpendicular() { return VEC_2DTEMPLATE(-y, x); }	//OBTENER LA PERPPENDICULAR DE UN VECTOR.
+	VEC_2DTEMPLATE operator +(const VEC_2DTEMPLATE& vec_derecha) const { return VEC_2DTEMPLATE(this->x + vec_derecha.x, this->y + vec_derecha.y); }	//OPERATOR DE ADICION DE VECTORES.
+	VEC_2DTEMPLATE operator -(const VEC_2DTEMPLATE& vec_derecha) const { return VEC_2DTEMPLATE(this->x - vec_derecha.x, this->y - vec_derecha.y); }	//OPERATOR DE SUBSTRACCION DE VECTORES.
+	VEC_2DTEMPLATE operator *(const VEC_2DTEMPLATE& vec_derecha) const { return VEC_2DTEMPLATE(this->x * vec_derecha.x, this->y * vec_derecha.x); }	//OPERATOR DE PRODUCTO DE VECTORES.
+	VEC_2DTEMPLATE operator *(const T& escalar_derecha) const { return VEC_2DTEMPLATE(this->x * escalar_derecha, this->y * escalar_derecha); }	//OPERATOR DE PRODUCTO DE UN VECTOR Y ESCALAR.
+	VEC_2DTEMPLATE operator /(const VEC_2DTEMPLATE& vec_derecha) const { return VEC_2DTEMPLATE(this->x / vec_derecha.x, this->y / vec_derecha.y); }	//OPERATOR DE COCIENTE DE VECTORES.
+	VEC_2DTEMPLATE operator /(const T& escalar_derecha) const { return VEC_2DTEMPLATE(this->x / escalar_derecha, this->y / escalar_derecha); }	//OPERATOR DE COCIENTE DE UN VECTOR Y ESCALAR.
+	VEC_2DTEMPLATE& operator += (const VEC_2DTEMPLATE& vec_derecha) { this->x += vec_derecha.x; this->y += vec_derecha.y; return *this; }	//OPERATOR DE ADICION SOBRE EL MISMO VECTOR.
+	VEC_2DTEMPLATE& operator -= (const VEC_2DTEMPLATE& vec_derecha) { this->x -= vec_derecha.x; this->y -= vec_derecha.y; return *this; }	//OPERATOR DE SUBSTRACCION SOBRE EL MISMO VECTOR.
+	VEC_2DTEMPLATE& operator *= (const T& escalar_derecha) { this->x *= escalar_derecha; this->y *= escalar_derecha; return *this; }	//OPERATOR DE PRODUCTO SOBRE EL MISMO VECTOR.
+	VEC_2DTEMPLATE& operator /= (const T& escalar_derecha) { this->x /= escalar_derecha; this->y /= escalar_derecha; return *this; }	//OPERATOR DE COCIENTE SOBRE EL MISMO VECTOR.
+	operator VEC_2DTEMPLATE<int32_t>() const { return { static_cast<int32_t>(this->x), static_cast<int32_t>(this->y) }; } //OPERATOR DE CASTING(INT_32) SOBRE EL MISMO VECTOR.
+	operator VEC_2DTEMPLATE<float>() const { return { static_cast<float>(this->x), static_cast<float>(this->y) }; }	//OPERATOR DE CASTING(FLOAT) SOBRE EL MISMO VECTOR.
+	operator VEC_2DTEMPLATE<double>() const { return { static_cast<double>(this->x), static_cast<double>(this->y) }; }	//OPERATOR DE CASTING(DOUBLE) SOBRE EL MISMO VECTOR.
+};
+
+template<class T> inline VEC_2DTEMPLATE<T> operator * (const float& lhs, const VEC_2DTEMPLATE<T>& rhs) { return VEC_2DTEMPLATE<T>((T)(lhs * (float)rhs.x), (T)(lhs * (float)rhs.y)); }	//OPERATOR DE PRODUCTO FLOTANTE SOBRE 1 VECTORES Y 1 ESCALAR.
+template<class T> inline VEC_2DTEMPLATE<T> operator * (const double& lhs, const VEC_2DTEMPLATE<T>& rhs) { return VEC_2DTEMPLATE<T>((T)(lhs * (double)rhs.x), (T)(lhs * (double)rhs.y)); }	//OPERATOR DE PRODUCTO FLOTANTE DE DOBLE PRESICION SOBRE 1 VECTORES Y 1 ESCALAR.
+template<class T> inline VEC_2DTEMPLATE<T> operator * (const int& lhs, const VEC_2DTEMPLATE<T>& rhs) { return VEC_2DTEMPLATE<T>((T)(lhs * (int)rhs.x), (T)(lhs * (int)rhs.y)); }	//OPERATOR DE PRODUCTO ENTERO SOBRE 1 VECTORES Y 1 ESCALAR.
+template<class T> inline VEC_2DTEMPLATE<T> operator / (const float& lhs, const VEC_2DTEMPLATE<T>& rhs) { return VEC_2DTEMPLATE<T>((T)(lhs / (float)rhs.x), (T)(lhs / (float)rhs.y)); }	//OPERATOR DE COCIENTE FLOTANTE SOBRE 1 VECTORES Y 1 ESCALAR.
+template<class T> inline VEC_2DTEMPLATE<T> operator / (const double& lhs, const VEC_2DTEMPLATE<T>& rhs) { return VEC_2DTEMPLATE<T>((T)(lhs / (double)rhs.x), (T)(lhs / (double)rhs.y)); }	//OPERATOR DE COCIENTE FLOTANTE DE DOBLE PRESICION SOBRE 1 VECTORES Y 1 ESCALAR.
+template<class T> inline VEC_2DTEMPLATE<T> operator / (const int& lhs, const VEC_2DTEMPLATE<T>& rhs) { return VEC_2DTEMPLATE<T>((T)(lhs / (int)rhs.x), (T)(lhs / (int)rhs.y)); }	//OPERATOR DE COCIENTE FLOTANTE SOBRE 1 VECTORES Y 1 ESCALAR.
+
+typedef VEC_2DTEMPLATE<int32_t> VECi_2D;	//DEFINIR UN TIPO PARA UN VECTOR ENTERO.
+typedef VEC_2DTEMPLATE<uint32_t> VECui_2D;	//DEFINIR UN TIPO PARA UN VECTOR ENTERO SIN SIGNO.
+typedef VEC_2DTEMPLATE<float> VECf_2D;	//DEFINIR UN TIPO PARA UN VECTOR FLOTANTE.
+typedef VEC_2DTEMPLATE<double> VECd_2D;	//DEFINIR UN TIPO PARA UN VECTOR FLOTANTE DE DOBLE PRESICION.
+
 static LRESULT CALLBACK windowEvent(HWND, UINT, WPARAM, LPARAM);
-bool broadcast();
 
 //int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 int main(){
